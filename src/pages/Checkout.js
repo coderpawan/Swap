@@ -1,50 +1,133 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import MobileHeader from "../components/MobileHeader";
 import Footer from "../components/Footer";
 import BgTitle1 from "../assets/images/bg/page-title-1.png";
 import Pay2 from "../assets/images/others/pay-2.webp";
 import { Link } from "react-router-dom";
+import Data from "../data/ShortlistedProduct";
 
 const Checkout = () => {
-  return (
-    <div>
-      <Header />
-      <MobileHeader />
+  const [firstname, setFirstname] = useState();
+  const [lastname, setLastname] = useState();
+  const [address, setAddress] = useState();
+  const [city, setCity] = useState();
+  const [state, setState] = useState();
+  const [pincode, setPincode] = useState();
+  const [email, setEmail] = useState();
+  const [phone, setPhone] = useState();
+  const [point, setpoint] = useState(false);
+  const [cartData, setCartData] = useState();
+  const [isLoaded, setIsLoaded] = useState();
+  const [error, setError] = useState();
+  const [payment, setPayment] = useState("razorpay");
+  const user = localStorage.getItem("user");
+  const [submit, setSubmit] = useState("");
 
-      {/* <!-- Page Title/Header Start --> */}
-      <div
-        class="page-title-section section"
-        style={{ backgroundImage: `url(${BgTitle1})` }}
-      >
-        <div class="container">
-          <div class="row">
-            <div class="col">
-              <div class="page-title">
-                <h1 class="title">Checkout</h1>
-                <ul class="breadcrumb">
-                  <li class="breadcrumb-item">
-                    <Link to="/">Home</Link>
-                  </li>
-                  <li class="breadcrumb-item active">Checkout</li>
-                </ul>
+  var token = JSON.parse(localStorage.getItem("login-info"));
+
+  useEffect(() => {
+    fetch("http://super.sytes.net/apis/cart/", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token.access}`,
+      },
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          setCartData(result);
+          console.log("cartresult", result);
+          setIsLoaded(true);
+        },
+
+        (error) => {
+          setIsLoaded(true);
+          setError(error);
+        }
+      );
+  }, [token]);
+
+  const PayPoints = () => {
+    setpoint(!point);
+    if (point) {
+      setPayment("points");
+    } else {
+      setPayment("razorpay");
+    }
+  };
+
+  const Customerdetails = async () => {
+    let Details = {
+      First_name: firstname,
+      last_name: lastname,
+      address: address,
+      city: city,
+      state: state,
+      zip_code: pincode,
+      email: email,
+      phone,
+      payment_mode: payment,
+    };
+    console.log(payment);
+    var response = await fetch("http://super.sytes.net/apis/checkout/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token.access}`,
+      },
+      body: JSON.stringify(Details),
+    });
+
+    let result = await response.json();
+    console.log("result", result);
+    setSubmit(result.detail);
+  };
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  } else if (!isLoaded) {
+    return <div>Loading...</div>;
+  } else {
+    return (
+      <div>
+        <Header userinfo={user} />
+        <MobileHeader />
+
+        {/* <!-- Page Title/Header Start --> */}
+        <div
+          class="page-title-section section"
+          style={{ backgroundImage: `url(${BgTitle1})` }}
+        >
+          <div class="container">
+            <div class="row">
+              <div class="col">
+                <div class="page-title">
+                  <h1 class="title">Checkout</h1>
+                  <ul class="breadcrumb">
+                    <li class="breadcrumb-item">
+                      <Link to="/">Home</Link>
+                    </li>
+                    <li class="breadcrumb-item active">Checkout</li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      {/* <!-- Page Title/Header End --> */}
+        {/* <!-- Page Title/Header End --> */}
 
-      {/* <!-- Checkout Section Start --> */}
-      <div class="section section-padding">
-        <div class="container">
-          <div class="checkout-coupon">
-            <p class="coupon-toggle">
+        {/* <!-- Checkout Section Start --> */}
+        <div class="section section-padding">
+          <div class="container">
+            {/* <div class="checkout-coupon">
+             <p class="coupon-toggle">
               Have a coupon?{" "}
               <a href="#checkout-coupon-form" data-bs-toggle="collapse">
                 Click here to enter your code
               </a>
-            </p>
+            </p> 
             <div id="checkout-coupon-form" class="collapse">
               <div class="coupon-form">
                 <p>If you have a coupon code, please apply it below.</p>
@@ -60,25 +143,73 @@ const Checkout = () => {
                 </form>
               </div>
             </div>
-          </div>
-          <div class="section-title2">
-            <h2 class="title">Billing details</h2>
-          </div>
-          <form action="#" class="checkout-form learts-mb-50">
-            <div class="row">
-              <div class="col-md-6 col-12 learts-mb-20">
-                <label for="bdFirstName">
-                  FIrst Name <abbr class="required">*</abbr>
-                </label>
-                <input type="text" id="bdFirstName" />
-              </div>
-              <div class="col-md-6 col-12 learts-mb-20">
-                <label for="bdLastName">
-                  Last Name <abbr class="required">*</abbr>
-                </label>
-                <input type="text" id="bdLastName" />
-              </div>
-              <div class="col-12 learts-mb-20">
+          </div> */}
+            <div class="section-title2">
+              <h2 class="title">Billing details</h2>
+            </div>
+            <form action="#" class="checkout-form learts-mb-50">
+              <div class="row">
+                <div class="col-md-6 col-12 learts-mb-20">
+                  <label for="bdFirstName">
+                    FIrst Name <abbr class="required">*</abbr>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="First Name"
+                    onChange={(e) => setFirstname(e.target.value)}
+                    id="bdFirstName"
+                  />
+                </div>
+                <div class="col-md-6 col-12 learts-mb-20">
+                  <label for="bdLastName">
+                    Last Name <abbr class="required">*</abbr>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Last Name"
+                    onChange={(e) => setLastname(e.target.value)}
+                    id="bdLastName"
+                  />
+                </div>
+                <div class="col-12 learts-mb-20">
+                  <label for="bdAddress">
+                    Address <abbr class="required">*</abbr>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Present Address"
+                    onChange={(e) => setAddress(e.target.value)}
+                    id="bdAddress"
+                  />
+                </div>
+                <div class="col-md-6 col-12 learts-mb-20">
+                  <label for="bdCity">
+                    City <abbr class="required">*</abbr>
+                  </label>
+                  <input
+                    type="city"
+                    required
+                    placeholder="City"
+                    onChange={(e) => setCity(e.target.value)}
+                    id="bdCity"
+                  />
+                </div>
+                <div class="col-md-6 col-12 learts-mb-20">
+                  <label for="bdState">
+                    State <abbr class="required">*</abbr>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="State"
+                    onChange={(e) => setState(e.target.value)}
+                    id="bdState"
+                  />
+                </div>
+                {/* <div class="col-12 learts-mb-20">
                 <label for="bdCompanyName">Company name (optional)</label>
                 <input type="text" id="bdCompanyName" />
               </div>
@@ -440,119 +571,169 @@ const Checkout = () => {
                   <option value="BD-63">Tangail</option>
                   <option value="BD-64">Thakurgaon</option>
                 </select>
-              </div>
-              <div class="col-12 learts-mb-20">
-                <label for="bdPostcode">Postcode / ZIP (optional)</label>
-                <input type="text" id="bdPostcode" />
-              </div>
-              <div class="col-md-6 col-12 learts-mb-20">
-                <label for="bdEmail">
-                  Email address <abbr class="required">*</abbr>
-                </label>
-                <input type="text" id="bdEmail" />
-              </div>
-              <div class="col-md-6 col-12 learts-mb-30">
-                <label for="bdPhone">
-                  Phone <abbr class="required">*</abbr>
-                </label>
-                <input type="text" id="bdPhone" />
-              </div>
-              <div class="col-12 learts-mb-40">
-                <div class="form-check">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="exampleCheck1"
-                  />
-                  <label class="form-check-label" for="exampleCheck1">
-                    Create an account?
+              </div> */}
+                <div class="col-12 learts-mb-20">
+                  <label for="bdPincode">
+                    Pincode <abbr class="required">*</abbr>
                   </label>
+                  <input
+                    type="number"
+                    required
+                    placeholder="Pincode"
+                    onChange={(e) => setPincode(e.target.value)}
+                    id="bdPincode"
+                  />
+                </div>
+                <div class="col-md-6 col-12 learts-mb-20">
+                  <label for="bdEmail">
+                    Email address <abbr class="required">*</abbr>
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="email address"
+                    onChange={(e) => setEmail(e.target.value)}
+                    id="bdEmail"
+                  />
+                </div>
+                <div class="col-md-6 col-12 learts-mb-30">
+                  <label for="bdPhone">
+                    Phone <abbr class="required">*</abbr>
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="Phone number"
+                    onChange={(e) => setPhone(e.target.value)}
+                    id="bdPhone"
+                  />
+                </div>
+                {/* <div class="col-12 learts-mb-40">
+                  <div class="form-check">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      id="exampleCheck1"
+                    />
+                    <label class="form-check-label" for="exampleCheck1">
+                      Create an account?
+                    </label>
+                  </div>
+                </div>
+                <div class="col-12 learts-mb-20">
+                  <label for="bdOrderNote">Order Notes (optional)</label>
+                  <textarea
+                    id="bdOrderNote"
+                    placeholder="Notes about your order, e.g. special notes for delivery."
+                  ></textarea>
+                </div> */}
+              </div>
+            </form>
+            <div class="section-title2 text-center">
+              <h2 class="title">Your order</h2>
+            </div>
+            <div class="row learts-mb-n30">
+              <div class="col-lg-6 order-lg-2 learts-mb-30">
+                <div class="order-review">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="name">Product</th>
+                        <th class="total">{point ? "Points" : "Price"}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {cartData.map((item) => {
+                        return (
+                          <tr>
+                            <td class="name">
+                              {item.product.title}&nbsp;{" "}
+                              <strong class="quantity">×&nbsp;1</strong>
+                            </td>
+                            <td class="total">
+                              <span>
+                                {point
+                                  ? item.product.sale_coins
+                                  : `₹${item.product.price}`}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                    <tfoot>
+                      <tr class="subtotal">
+                        <th>Subtotal</th>
+                        <td>
+                          <span>
+                            {point ? "1350" : `₹${cartData[0].cart_sub_total}`}
+                          </span>
+                        </td>
+                      </tr>
+                      <tr class="total">
+                        <th>Total</th>
+                        <td>
+                          <strong>
+                            <span>
+                              {point
+                                ? "1350"
+                                : `₹${cartData[0].cart_sub_total}`}
+                            </span>
+                          </strong>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
                 </div>
               </div>
-              <div class="col-12 learts-mb-20">
-                <label for="bdOrderNote">Order Notes (optional)</label>
-                <textarea
-                  id="bdOrderNote"
-                  placeholder="Notes about your order, e.g. special notes for delivery."
-                ></textarea>
-              </div>
-            </div>
-          </form>
-          <div class="section-title2 text-center">
-            <h2 class="title">Your order</h2>
-          </div>
-          <div class="row learts-mb-n30">
-            <div class="col-lg-6 order-lg-2 learts-mb-30">
-              <div class="order-review">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th class="name">Product</th>
-                      <th class="total">Subtotal</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td class="name">
-                        Walnut Cutting Board&nbsp;{" "}
-                        <strong class="quantity">×&nbsp;1</strong>
-                      </td>
-                      <td class="total">
-                        <span>₹100.00</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="name">
-                        Pizza Plate Tray&nbsp;{" "}
-                        <strong class="quantity">×&nbsp;1</strong>
-                      </td>
-                      <td class="total">
-                        <span>₹22.00</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="name">
-                        Minimalist Ceramic Pot - Pearl river, Large&nbsp;{" "}
-                        <strong class="quantity">×&nbsp;1</strong>
-                      </td>
-                      <td class="total">
-                        <span>₹120.00</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                  <tfoot>
-                    <tr class="subtotal">
-                      <th>Subtotal</th>
-                      <td>
-                        <span>₹242.00</span>
-                      </td>
-                    </tr>
-                    <tr class="total">
-                      <th>Total</th>
-                      <td>
-                        <strong>
-                          <span>₹242.00</span>
-                        </strong>
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-            </div>
-            <div class="col-lg-6 order-lg-1 learts-mb-30">
-              <div class="order-payment">
-                <div class="payment-method">
-                  <div class="accordion" id="paymentMethod">
-                    <div class="card active">
-                      <div class="card-header">
-                        <button
-                          data-bs-toggle="collapse"
-                          data-bs-target="#checkPayments"
-                        >
-                          Check payments
-                        </button>
+              <div class="col-lg-6 order-lg-1 learts-mb-30">
+                <div class="order-payment">
+                  <div class="payment-method">
+                    <div class="accordion" id="paymentMethod">
+                      <div class="card">
+                        <div class="card-header">
+                          <input
+                            type="radio"
+                            value="Pay"
+                            name="Pay"
+                            defaultChecked
+                            style={{ position: "relative", top: "8px" }}
+                            onClick={PayPoints}
+                          ></input>
+                          <div
+                            className=""
+                            style={{ marginLeft: "20px", fontWeight: "600" }}
+                          >
+                            Pay By Cash
+                          </div>
+                        </div>
+                        {/* <div
+                        id="cashkPayments"
+                        class="collapse"
+                        data-bs-parent="#paymentMethod"
+                      >
+                        <div class="card-body">
+                          <p>Pay with cash upon delivery.</p>
+                        </div>
+                      </div> */}
                       </div>
-                      <div
+                      <div class="card">
+                        <div class="card-header">
+                          <input
+                            type="radio"
+                            value="Pay"
+                            name="Pay"
+                            style={{ position: "relative", top: "8px" }}
+                            onClick={PayPoints}
+                          ></input>
+                          <div
+                            className=""
+                            style={{ marginLeft: "20px", fontWeight: "600" }}
+                          >
+                            Pay By Points
+                          </div>
+                        </div>
+                        {/* <div
                         id="checkPayments"
                         class="collapse show"
                         data-bs-parent="#paymentMethod"
@@ -563,28 +744,10 @@ const Checkout = () => {
                             Store Town, Store State / County, Store Postcode.
                           </p>
                         </div>
+                      </div> */}
                       </div>
-                    </div>
-                    <div class="card">
-                      <div class="card-header">
-                        <button
-                          data-bs-toggle="collapse"
-                          data-bs-target="#cashkPayments"
-                        >
-                          Cash on delivery{" "}
-                        </button>
-                      </div>
-                      <div
-                        id="cashkPayments"
-                        class="collapse"
-                        data-bs-parent="#paymentMethod"
-                      >
-                        <div class="card-body">
-                          <p>Pay with cash upon delivery.</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="card">
+
+                      {/* <div class="card">
                       <div class="card-header">
                         <button
                           data-bs-toggle="collapse"
@@ -605,29 +768,36 @@ const Checkout = () => {
                           </p>
                         </div>
                       </div>
+                    </div> */}
                     </div>
                   </div>
-                </div>
-                <div class="text-center">
-                  <p class="payment-note">
-                    Your personal data will be used to process your order,
-                    support your experience throughout this website, and for
-                    other purposes described in our privacy policy.
-                  </p>
-                  <button class="btn btn-dark btn-outline-hover-dark">
-                    place order
-                  </button>
+                  <div class="text-center">
+                    <p class="payment-note">
+                      Your personal data will be used to process your order,
+                      support your experience throughout this website, and for
+                      other purposes described in our privacy policy.
+                    </p>
+                    <button
+                      class="btn btn-dark btn-outline-hover-dark"
+                      onClick={Customerdetails}
+                    >
+                      place order
+                    </button>
+                    <div style={{ color: "green", marginTop: "20px" }}>
+                      {submit}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      {/* <!-- Checkout Section End --> */}
+        {/* <!-- Checkout Section End --> */}
 
-      <Footer />
-    </div>
-  );
+        <Footer />
+      </div>
+    );
+  }
 };
 
 export default Checkout;

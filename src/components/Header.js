@@ -171,81 +171,184 @@ const Header = (props) => {
                     <Link to="/shopleftfullwidth">
                       <span class="menu-text">Shop</span>
                     </Link>
-                    {/* <ul class="sub-menu mega-menu">
+                    <ul class="sub-menu mega-menu">
                       <li>
                         <a href="/" class="mega-menu-title">
-                          <span class="menu-text">SHOP PAGES</span>
+                          <span class="menu-text">WOMEN</span>
                         </a>
                         <ul>
                           <li>
                             <Link to="/shopleftfullwidth">
-                              <span class="menu-text">
-                                Shop Fullwidth Left Sidebar
-                              </span>
+                              <span class="menu-text">Activewear</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Bodysuit</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Co-ord</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Corset</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Crop Top</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Dress</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Jacket</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Jeans</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Jewellery Set</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Jumpsuit</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Long Maxi</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Maternity Wear</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Necklace</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Nightwear</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Pant</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Scarf</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Shirt</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Shorts</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Skirt</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Sweater</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Sweatshirt</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Swimwear</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">T-Shirt</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Top</span>
                             </Link>
                           </li>
                         </ul>
                       </li>
                       <li>
                         <a href="/" class="mega-menu-title">
-                          <span class="menu-text">PRODUCT PAGES</span>
+                          <span class="menu-text">KIDS</span>
                         </a>
                         <ul>
                           <li>
-                            <Link to="/productfullwidth">
-                              <span class="menu-text">Fullwidth</span>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Kids</span>
                             </Link>
                           </li>
                         </ul>
                       </li>
                       <li>
                         <a href="/" class="mega-menu-title">
-                          <span class="menu-text">PRODUCT & Other PAGES</span>
+                          <span class="menu-text">ACCESSORIES</span>
                         </a>
                         <ul>
                           <li>
-                            <Link to="/shoppingcart">
-                              <span class="menu-text">Shopping Cart</span>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Ring</span>
                             </Link>
                           </li>
                           <li>
-                            <Link to="/checkout">
-                              <span class="menu-text">Checkout</span>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Belt</span>
                             </Link>
                           </li>
                           <li>
-                            <Link to="/ordertracking">
-                              <span class="menu-text">Order Tracking</span>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Necklace</span>
                             </Link>
                           </li>
                           <li>
-                            <Link to="/wishlist">
-                              <span class="menu-text">Wishlist</span>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Earrings</span>
                             </Link>
                           </li>
                           <li>
-                            <Link to="/customerlogin">
-                              <span class="menu-text">Customer Login</span>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Bracelet</span>
                             </Link>
                           </li>
                           <li>
-                            <Link to="/myaccount">
-                              <span class="menu-text">My Account</span>
-                            </Link>
-                          </li>
-                          <li>
-                            <Link to="/forgetpassword">
-                              <span class="menu-text">Forget Password</span>
+                            <Link to="/shopleftfullwidth">
+                              <span class="menu-text">Body Chain</span>
                             </Link>
                           </li>
                         </ul>
                       </li>
-                      <li class="align-self-center">
-                        <a href="/" class="menu-banner">
-                          <img src={Menubar1} alt="Shop Menu Banner" />
-                        </a>
-                      </li>
-                    </ul> */}
+                    </ul>
                   </li>
                   <li class="has-children">
                     <a href="/">
@@ -324,6 +427,11 @@ const Header = (props) => {
                   <div style={{ cursor: "pointer" }} onClick={logout}>
                     Logout
                   </div>
+                )}
+                {!props.userinfo && (
+                  <Link to="/customerlogin">
+                    <div style={{ cursor: "pointer" }}>Login</div>
+                  </Link>
                 )}
               </div>
             </div>

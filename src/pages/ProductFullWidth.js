@@ -26,6 +26,7 @@ import { useParams } from "react-router";
 Modal.setAppElement("#root");
 
 const ProductFullWidth = () => {
+  const user = localStorage.getItem("user");
   const [productwish, setProductwish] = useState(false);
   const [productcart, setProductcart] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -128,32 +129,23 @@ const ProductFullWidth = () => {
   } else {
     return (
       <div>
-        <Header data={count} cartData={cartCount} />
+        <Header data={count} cartData={cartCount} userinfo={user} />
         <MobileHeader />
         {/* <!-- Page Title/Header Start --> */}
         <div
-          class="page-title-section section"
-          style={{ backgroundImage: `url(${BgTitle1})` }}
+          class=""
+          style={{
+            backgroundColor: "black",
+            width: "30vw",
+            position: "relative",
+            left: "33%",
+          }}
         >
-          <div class="container">
-            <div class="row">
-              <div class="col">
-                <div class="page-title">
-                  <h1 class="title">Shop</h1>
-                  <ul class="breadcrumb">
-                    <li class="breadcrumb-item">
-                      <Link to="/">Home</Link>
-                    </li>
-                    <li class="breadcrumb-item">
-                      <Link to="/shopleftfullwidth">Products</Link>
-                    </li>
-                    <li class="breadcrumb-item active">
-                      Decorative Christmas Fox
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
+          <div
+            class="shop_banner"
+            style={{ color: "white", textAlign: "center", fontSize: "50px" }}
+          >
+            Women
           </div>
         </div>
         {/* <!-- Page Title/Header End --> */}
@@ -468,30 +460,36 @@ const ProductFullWidth = () => {
                       </a>
                     </div>
                     <h3 class="product-title">
-                      {productdetails.data.name} from{" "}
-                      {productdetails.data.Brands}
+                      {productdetails.data.name} {productdetails.data.title}
                     </h3>
                     <div class="product-price">
-                      220 points or ₹{productdetails.data.price}
+                      {productdetails.data.sale_coins} points or ₹
+                      {productdetails.data.price}
                     </div>
                     <div class="product-description">
                       <div className="">
                         Brand: {productdetails.data.Brands}
                       </div>
+                      <div className="">
+                        Cloth Type: {productdetails.data.cloth_type}
+                      </div>
                       <div className="">Size: {productdetails.data.size}</div>
-                      <div className="">Chest: {productdetails.data.bust}"</div>
+                      <div className="">
+                        Colour: {productdetails.data.colour}
+                      </div>
+                      <div className="">
+                        Material: {productdetails.data.material_type}
+                      </div>
+                      <div className="">
+                        Condition: {productdetails.data.condition}
+                      </div>
+                      <div className="">Bust: {productdetails.data.bust}"</div>
+                      <div className="">
+                        Waist: {productdetails.data.waist}"
+                      </div>
+                      <div className="">Hip: {productdetails.data.hip}"</div>
                       <div className="">
                         Length: {productdetails.data.length}"
-                      </div>
-                      <div className="">
-                        Arm Hole: {productdetails.data.hip}"
-                      </div>
-                      <div className="">
-                        Sleeve Length: {productdetails.data.waist}"
-                      </div>
-                      <div className="">
-                        Fabric: {productdetails.data.cloth_type},{" "}
-                        {productdetails.data.material_type}{" "}
                       </div>
                     </div>
                     <div class="product-variations"></div>
@@ -518,6 +516,13 @@ const ProductFullWidth = () => {
                         )}
                         Add to Cart
                       </div>
+                      {productcart ? (
+                        <div className="addedalert">
+                          This item is added to cart
+                        </div>
+                      ) : (
+                        <div></div>
+                      )}
                     </div>
                     <div class="product-brands">
                       <span class="title">Description</span>
@@ -527,16 +532,7 @@ const ProductFullWidth = () => {
                       >
                         <div class="row">
                           <div class="col-lg-10 col-12">
-                            <p>
-                              From the Holiday Moments Collection This adorable
-                              brown fox looking over his right shoulder would be
-                              a wonderful accent in any holiday decor. Features
-                              faux fur, burlap and canvas creating a unique,
-                              textured appearance. Accented with a red plaid bow
-                              and a small pine spray and pine cone Dimensions:
-                              8″H x 8″W x 3.75″D. Material(s):
-                              foam/fabric/plastic.
-                            </p>
+                            <p>{productdetails.data.description}</p>
                           </div>
                         </div>
                       </div>
@@ -548,7 +544,7 @@ const ProductFullWidth = () => {
                             <td class="label">
                               <span>SKU</span>
                             </td>
-                            <td class="value">040423</td>
+                            <td class="value">{productdetails.data.sku}</td>
                           </tr>
                           <tr>
                             <td class="label">
@@ -557,21 +553,17 @@ const ProductFullWidth = () => {
                             <td class="value">
                               <ul class="product-category">
                                 <li>
-                                  <a href="/">Gift ideas</a>
+                                  <a href="/">{productdetails.data.colour}</a>
                                 </li>
                                 <li>
-                                  <a href="/">Home Decor</a>
-                                </li>
-                                <li>
-                                  <a href="/">Kids & Babies</a>
-                                </li>
-                                <li>
-                                  <a href="/">Toys</a>
+                                  <a href="/">
+                                    {productdetails.data.condition}
+                                  </a>
                                 </li>
                               </ul>
                             </td>
                           </tr>
-                          <tr>
+                          {/* <tr>
                             <td class="label">
                               <span>Tags</span>
                             </td>
@@ -594,7 +586,7 @@ const ProductFullWidth = () => {
                                 </li>
                               </ul>
                             </td>
-                          </tr>
+                          </tr> */}
                           <tr>
                             <td class="label">
                               <span>Share on</span>
@@ -886,12 +878,12 @@ const ProductFullWidth = () => {
                           >
                             {items.discount}%
                           </span>
-                          <span class={`hot product-badges ${items.hot}`}>
+                          {/* <span class={`hot product-badges ${items.hot}`}>
                             hot
                           </span>
                           <i
                             class={`fal fa-frown outofstock product-badges ${items.emoji}`}
-                          ></i>
+                          ></i> */}
 
                           <img src={items.image} alt="Product" />
                           <img
@@ -900,36 +892,16 @@ const ProductFullWidth = () => {
                             alt="Product"
                           />
                         </Link>
-                        {
-                          <div
-                            class="add-to-wishlist hintT-left"
-                            data-hint="Add to wishlist"
-                          >
-                            {items.like ? (
-                              <i
-                                class="fas fa-heart"
-                                id={items.id}
-                                onClick={wishes}
-                              ></i>
-                            ) : (
-                              <i
-                                class="far fa-heart"
-                                id={items.id}
-                                onClick={wishes}
-                              ></i>
-                            )}
-                          </div>
-                        }
                       </div>
                       <div class="product-info">
                         <h6 class="title">
-                          <a href="product-details.html">Boho Beard Mug</a>
+                          <a href="product-details.html">{items.title}</a>
                         </h6>
                         <span class="price">
                           <span class={`old ${items.old}`}>
                             {items.old_price}
                           </span>
-                          <span class="new">{items.price}</span>
+                          <span class="new">₹{items.price}</span>
                         </span>
                         <div class="product-buttons">
                           <a
@@ -958,13 +930,28 @@ const ProductFullWidth = () => {
                               ></i>
                             )}
                           </div>
-                          <a
-                            href="/"
+                          <div
                             class="product-button hintT-top"
-                            data-hint="Compare"
+                            data-hint="Add to wishlist"
                           >
-                            <i class="fal fa-random"></i>
-                          </a>
+                            {
+                              <div class="add-to-wishlist">
+                                {items.like ? (
+                                  <i
+                                    class="fas fa-heart"
+                                    id={items.id}
+                                    onClick={wishes}
+                                  ></i>
+                                ) : (
+                                  <i
+                                    class="far fa-heart"
+                                    id={items.id}
+                                    onClick={wishes}
+                                  ></i>
+                                )}
+                              </div>
+                            }
+                          </div>
                         </div>
                       </div>
                     </div>

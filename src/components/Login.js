@@ -1,17 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const Login = ({ loginfunction }) => {
+const Login = ({ props }) => {
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
   const [user, setUser] = useState();
+  const [message, setMessage] = useState("");
 
   // const [authTokens, setAuthTokens] = useState(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("login-info"));
+    if (token) {
+      navigate("/", { refresh: true });
+    }
+  });
+
   const Logintrigger = async () => {
     // console.log("data", username, password);
     let item = { username, password };
+
     var response = await fetch("http://super.sytes.net/auth/login/", {
       method: "POST",
       headers: {
@@ -22,10 +31,11 @@ const Login = ({ loginfunction }) => {
     });
 
     let result = await response.json();
-    // console.log(result);
+    // console.log(result.access);
     localStorage.setItem("login-info", JSON.stringify(result));
-    navigate("/");
+    console.log(props.token.access);
   };
+
   return (
     <div class="col-lg-6">
       <div class="user-login-register bg-light">
@@ -35,22 +45,27 @@ const Login = ({ loginfunction }) => {
           {/* <p>Hii {user}</p> */}
         </div>
         <div class="login-register-form">
-          <form>
+          <form action="#">
             <div class="row learts-mb-n50">
               <div class="col-12 learts-mb-50">
                 <input
                   type="email"
+                  required
                   placeholder="email address"
                   onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
-              <div class="col-12 learts-mb-50">
+              <div class="col-12 learts-mb-20">
                 <input
                   type="password"
+                  required
                   placeholder="Password"
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
+              <p className="learts-mb-30" style={{ color: "red" }}>
+                {message}
+              </p>
               <div class="col-12 text-center learts-mb-50">
                 <button
                   class="btn btn-dark btn-outline-hover-dark"

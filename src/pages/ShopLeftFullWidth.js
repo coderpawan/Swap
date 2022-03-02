@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import MobileHeader from "../components/MobileHeader";
 import Footer from "../components/Footer";
 import BgTitle1 from "../assets/images/bg/page-title-1.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ProductData from "../data/ShortlistedProduct";
 import { Box } from "@mui/material";
 import { Slider } from "@mui/material";
@@ -18,54 +18,141 @@ const marks = [
     label: "₹0",
   },
   {
-    value: 50,
-    label: "₹50",
+    value: 400 / 8,
+    label: `₹${400 / 8}`,
   },
   {
-    value: 100,
-    label: "₹100",
+    value: 400 / 4,
+    label: `₹${400 / 4}`,
   },
   {
-    value: 200,
-    label: "₹200",
+    value: 400 / 2,
+    label: `₹${400 / 2}`,
   },
   {
-    value: 300,
-    label: "₹300",
+    value: 1200 / 4,
+    label: `₹${1200 / 4}`,
   },
   {
     value: 400,
-    label: "₹400",
+    label: `₹${400}`,
+  },
+];
+const coins = [
+  {
+    points: 0,
+  },
+  {
+    points: 400 / 8,
+  },
+  {
+    points: 400 / 4,
+  },
+  {
+    points: 400 / 2,
+  },
+  {
+    points: 1200 / 4,
+  },
+  {
+    points: 400,
   },
 ];
 
 function valuetext(value) {
   return `${value}`;
 }
+function pointtext(points) {
+  return `${points}`;
+}
 
 const ShopLeftFullWidth = () => {
+  const navigate = useNavigate();
   const [value, setValue] = React.useState([50, 150]);
+  const [points, setPoints] = React.useState([50, 150]);
 
-  const handleChange = (event, newValue) => {
+  const handleValue = (event, newValue) => {
     setValue(newValue);
   };
+  const handlePoints = (event, newPoints) => {
+    setPoints(newPoints);
+  };
+  const user = localStorage.getItem("user");
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [item, setItem] = useState([]);
   const [filter, setFilter] = useState(item);
   const [isActive, setActive] = useState(false);
   const [column, setColumn] = useState("row-cols-xl-3");
+  const [inputSearch, setInputSearch] = useState();
   const [productdetails, setProductdetails] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const { id } = useParams();
+  const UniqueClothtype = [];
+  const UniqueBrands = [];
+  item.map((items) => {
+    var findItem = UniqueClothtype.find(
+      (e) => e.cloth_type === items.cloth_type
+    );
+    if (!findItem) {
+      UniqueClothtype.push(items);
+    }
+  });
+  item.map((items) => {
+    var findItem = UniqueBrands.find((e) => e.Brands === items.Brands);
+    if (!findItem) {
+      UniqueBrands.push(items);
+    }
+  });
+  console.log("unique", UniqueBrands.Brands);
 
-  const filterProduct = (stat) => {
+  function filterProduct(stat) {
     const updatedList = item.filter((e) => e.status === stat);
     // const SortedList = updatedList.sort((e) => e.price === price);
     setFilter(updatedList);
+  }
+  function filterSize(size) {
+    const updatedList = item.filter((e) => e.size === size);
+    // const SortedList = updatedList.sort((e) => e.price === price);
+    setFilter(updatedList);
+  }
+  const handleType = (event) => {
+    const updatedList = item.filter((p) => p.cloth_type === event.target.value);
+    setFilter(updatedList);
   };
-
+  const handleBrand = (event) => {
+    const updatedList = item.filter((p) => p.Brands === event.target.value);
+    setFilter(updatedList);
+  };
+  const handlePrice = () => {
+    const minPrice = value[0];
+    const maxPrice = value[1];
+    const updatedList = item.filter(
+      (e) => e.price >= minPrice && e.price <= maxPrice
+    );
+    setFilter(updatedList);
+  };
+  const handleProductPoints = () => {
+    const minPoints = points[0];
+    const maxPoints = points[1];
+    const updatedList = item.filter(
+      (e) => e.sale_coins >= minPoints && e.sale_coins <= maxPoints
+    );
+    setFilter(updatedList);
+  };
+  const handleSearch = (e) => {
+    setInputSearch(e.target.value);
+    if (inputSearch) {
+      const updatedList = item.filter(
+        (head) =>
+          head.title.toLowerCase().search(inputSearch.toLowerCase().trim()) !==
+          -1
+      );
+      setFilter(updatedList);
+    }
+  };
+  console.log("items", item);
   // const sortProduct = (e) => {
   //   console.log(e.target.value);
   //   if (e.target.value === "price") {
@@ -129,6 +216,9 @@ const ShopLeftFullWidth = () => {
     var access = token.access;
     var cartid = items.id;
 
+    if (!token) {
+      navigate("/", { refresh: true });
+    }
     let cartItem = { token: access, product_id: cartid };
 
     var result = await fetch("http://super.sytes.net/apis/cart/add/", {
@@ -165,7 +255,7 @@ const ShopLeftFullWidth = () => {
   } else {
     return (
       <div>
-        <Header data={count} cartData={cartCount} />
+        <Header data={count} cartData={cartCount} userinfo={user} />
         <MobileHeader />
 
         {/* <!-- Page Title/Header Start --> */}
@@ -214,7 +304,7 @@ const ShopLeftFullWidth = () => {
                       data-filter=".featured"
                       onClick={() => filterProduct("featured")}
                     >
-                      Hot Products
+                      Sales Products
                     </button>
                     <button
                       data-filter=".new"
@@ -222,14 +312,13 @@ const ShopLeftFullWidth = () => {
                     >
                       New Products
                     </button>
-                    <button data-filter=".sales">Sales Products</button>
                   </div>
                 </div>
                 {/* <!-- Isotop Filter End --> */}
 
                 <div class="col-md-auto col-12 learts-mb-20">
                   <ul class="shop-toolbar-controls">
-                    <li>
+                    {/* <li>
                       <div class="product-sorting">
                         <select class="nice-select">
                           <option value="menu_order" selected="selected">
@@ -246,7 +335,7 @@ const ShopLeftFullWidth = () => {
                           </option>
                         </select>
                       </div>
-                    </li>
+                    </li> */}
                     <li>
                       <div class="product-column-toggle d-none d-xl-flex">
                         <button
@@ -293,14 +382,14 @@ const ShopLeftFullWidth = () => {
                         </button>
                       </div>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link
                         to="/shopleftfullwidth"
                         class="product-filter-toggle"
                       >
                         Filters
                       </Link>
-                    </li>
+                    </li> */}
                   </ul>
                 </div>
               </div>
@@ -546,11 +635,11 @@ const ShopLeftFullWidth = () => {
                                 to={`/productfullwidth/${items.id}`}
                                 class="image"
                               >
-                                <span
+                                {/* <span
                                   class={`onsale product-badges ${items.discount_visible}`}
                                 >
                                   {items.discount}%
-                                </span>
+                                </span> */}
                                 {/* <span class={`hot product-badges ${items.hot}`}>
                                   hot
                                 </span>
@@ -586,13 +675,15 @@ const ShopLeftFullWidth = () => {
                             </div>
                             <div class="product-info">
                               <h6 class="title">
-                                <a href="product-details.html">{items.name}</a>
+                                <a href="product-details.html">{items.title}</a>
                               </h6>
                               <span class="price">
                                 <span class={`old ${items.old}`}>
                                   {items.old_price}
                                 </span>
-                                <span class="new">{items.price}</span>
+                                <span class="new">
+                                  ₹{items.price}/{items.sale_coins}points
+                                </span>
                               </span>
                               <div class="product-buttons">
                                 <div
@@ -618,9 +709,18 @@ const ShopLeftFullWidth = () => {
                                     // shouldCloseOnOverlayClick={false}
                                   >
                                     <div
-                                      class="col-lg-6 col-12 learts-mb-40"
+                                      class="learts-mb-40"
                                       style={{ display: "flex" }}
                                     >
+                                      <div class="product-thumb product-thumb-modal">
+                                        <div class="image">
+                                          <img
+                                            src={items.image}
+                                            alt="Product"
+                                            className=" modal-image"
+                                          />
+                                        </div>
+                                      </div>
                                       <div class="product-summery">
                                         <div class="product-ratings">
                                           <span class="star-rating">
@@ -631,47 +731,48 @@ const ShopLeftFullWidth = () => {
                                               ratings
                                             </span>
                                           </span>
-                                          <a
-                                            href="#reviews"
-                                            class="review-link"
-                                          >
-                                            (<span class="count">2</span>{" "}
-                                            customer reviews)
-                                          </a>
                                         </div>
                                         <h3 class="product-title">
-                                          {productdetails.data.name} from{" "}
-                                          {productdetails.data.Brands}
+                                          {productdetails.data.title}
                                         </h3>
                                         <div class="product-price">
-                                          220 points or ₹
-                                          {productdetails.data.price}
+                                          {productdetails.data.sale_coins}{" "}
+                                          points or ₹{productdetails.data.price}
                                         </div>
                                         <div class="product-description">
                                           <div className="">
                                             Brand: {productdetails.data.Brands}
                                           </div>
                                           <div className="">
+                                            Cloth Type:{" "}
+                                            {productdetails.data.cloth_type}
+                                          </div>
+                                          <div className="">
                                             Size: {productdetails.data.size}
                                           </div>
                                           <div className="">
-                                            Chest: {productdetails.data.bust}"
+                                            Colour: {productdetails.data.colour}
+                                          </div>
+                                          <div className="">
+                                            Material:{" "}
+                                            {productdetails.data.material_type}
+                                          </div>
+                                          <div className="">
+                                            Condition:{" "}
+                                            {productdetails.data.condition}
+                                          </div>
+                                          <div className="">
+                                            Bust: {productdetails.data.bust}"
+                                          </div>
+                                          <div className="">
+                                            Waist: {productdetails.data.waist}"
+                                          </div>
+                                          <div className="">
+                                            Hip: {productdetails.data.hip}"
                                           </div>
                                           <div className="">
                                             Length: {productdetails.data.length}
                                             "
-                                          </div>
-                                          <div className="">
-                                            Arm Hole: {productdetails.data.hip}"
-                                          </div>
-                                          <div className="">
-                                            Sleeve Length:{" "}
-                                            {productdetails.data.waist}"
-                                          </div>
-                                          <div className="">
-                                            Fabric:{" "}
-                                            {productdetails.data.cloth_type},{" "}
-                                            {productdetails.data.material_type}{" "}
                                           </div>
                                         </div>
                                         <div class="product-variations"></div>
@@ -685,19 +786,10 @@ const ShopLeftFullWidth = () => {
                                             <div class="row">
                                               <div class="col-lg-10 col-12">
                                                 <p>
-                                                  From the Holiday Moments
-                                                  Collection This adorable brown
-                                                  fox looking over his right
-                                                  shoulder would be a wonderful
-                                                  accent in any holiday decor.
-                                                  Features faux fur, burlap and
-                                                  canvas creating a unique,
-                                                  textured appearance. Accented
-                                                  with a red plaid bow and a
-                                                  small pine spray and pine cone
-                                                  Dimensions: 8″H x 8″W x
-                                                  3.75″D. Material(s):
-                                                  foam/fabric/plastic.
+                                                  {
+                                                    productdetails.data
+                                                      .description
+                                                  }
                                                 </p>
                                               </div>
                                             </div>
@@ -772,7 +864,11 @@ const ShopLeftFullWidth = () => {
                   <div class="single-widget learts-mb-40">
                     <div class="widget-search">
                       <form action="/">
-                        <input type="text" placeholder="Search products...." />
+                        <input
+                          type="text"
+                          placeholder="Search products...."
+                          onChange={handleSearch}
+                        />
                         <button>
                           <i class="fal fa-search"></i>
                         </button>
@@ -784,40 +880,40 @@ const ShopLeftFullWidth = () => {
                   {/* <!-- Categories Start --> */}
                   <div class="single-widget learts-mb-40">
                     <h3 class="widget-title product-filter-widget-title">
-                      Product categories
+                      Cloth Type
                     </h3>
-                    <ul class="widget-list">
-                      <li>
-                        <Link to="/shopleftfullwidth">Gift ideas</Link>{" "}
-                        <span class="count">16</span>
-                      </li>
-                      <li>
-                        <Link to="/shopleftfullwidth">Home Decor</Link>{" "}
-                        <span class="count">16</span>
-                      </li>
-                      <li>
-                        <Link to="/shopleftfullwidth">Kids &amp; Babies</Link>{" "}
-                        <span class="count">6</span>
-                      </li>
-                      <li>
-                        <Link to="/shopleftfullwidth">Kitchen</Link>{" "}
-                        <span class="count">15</span>
-                      </li>
-                      <li>
-                        <Link to="/shopleftfullwidth">
-                          Kniting &amp; Sewing
-                        </Link>{" "}
-                        <span class="count">4</span>
-                      </li>
-                      <li>
-                        <Link to="/shopleftfullwidth">Pots</Link>{" "}
-                        <span class="count">4</span>
-                      </li>
-                      <li>
-                        <Link to="/shopleftfullwidth">Toys</Link>{" "}
-                        <span class="count">6</span>
-                      </li>
-                    </ul>
+                    <div class="widget-tags">
+                      <select
+                        name="brand"
+                        value={UniqueClothtype.cloth_type}
+                        id=""
+                        className=""
+                        onChange={handleType}
+                      >
+                        <option value="" disabled selected hidden className="">
+                          Select the cloth type
+                        </option>
+                        {UniqueClothtype.map((props) => {
+                          return (
+                            <option
+                              value={props.cloth_type}
+                              className=""
+                              key={props.id}
+                            >
+                              {props.cloth_type}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <div
+                        value=""
+                        className=""
+                        onClick={() => setFilter(item)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        All Cloth Type
+                      </div>
+                    </div>
                   </div>
                   {/* <!-- Categories End --> */}
 
@@ -833,7 +929,7 @@ const ShopLeftFullWidth = () => {
                           value={value}
                           min={0}
                           max={400}
-                          onChange={handleChange}
+                          onChange={handleValue}
                           valueLabelDisplay="auto"
                           getAriaValueText={valuetext}
                           marks={marks}
@@ -843,11 +939,44 @@ const ShopLeftFullWidth = () => {
                         <div className="" style={{ fontWeight: "500" }}>
                           Price range : ₹{value[0]} - ₹{value[1]}
                         </div>
-                        <button className="filter-button">Filter</button>
+                        <button className="filter-button" onClick={handlePrice}>
+                          Filter
+                        </button>
                       </div>
                     </div>
                   </div>
                   {/* <!-- Price Range End --> */}
+
+                  <div class="single-widget learts-mb-40">
+                    <h3 class="widget-title product-filter-widget-title">
+                      Filters by points
+                    </h3>
+                    <div class="widget-price-range">
+                      <Box>
+                        <Slider
+                          getAriaLabel={() => "Temperature range"}
+                          value={points}
+                          min={0}
+                          max={400}
+                          onChange={handlePoints}
+                          valueLabelDisplay="auto"
+                          getAriaValueText={pointtext}
+                          marks={coins}
+                        />
+                      </Box>
+                      <div className="">
+                        <div className="" style={{ fontWeight: "500" }}>
+                          Points range : {points[0]}points - {points[1]}points
+                        </div>
+                        <button
+                          className="filter-button"
+                          onClick={handleProductPoints}
+                        >
+                          Filter
+                        </button>
+                      </div>
+                    </div>
+                  </div>
 
                   {/* <!-- List Product Widget Start --> */}
                   {/* <div class="single-widget learts-mb-40">
@@ -888,33 +1017,37 @@ const ShopLeftFullWidth = () => {
                       Filter By Size
                     </h3>
                     <ul class="widget-list">
-                      <li>
+                      <li onClick={() => filterSize("L")}>
                         <Link to="/shopleftfullwidth">L</Link>{" "}
-                        <span class="count">16</span>
+                        {/* <span class="count">16</span> */}
                       </li>
-                      <li>
+                      <li onClick={() => filterSize("M")}>
                         <Link to="/shopleftfullwidth">M</Link>{" "}
-                        <span class="count">16</span>
+                        {/* <span class="count">16</span> */}
                       </li>
-                      <li>
+                      <li onClick={() => filterSize("S")}>
                         <Link to="/shopleftfullwidth">S</Link>{" "}
-                        <span class="count">6</span>
+                        {/* <span class="count">6</span> */}
                       </li>
-                      <li>
+                      <li onClick={() => filterSize("XL")}>
                         <Link to="/shopleftfullwidth">XL</Link>{" "}
-                        <span class="count">15</span>
+                        {/* <span class="count">15</span> */}
                       </li>
-                      <li>
+                      <li onClick={() => filterSize("XS")}>
                         <Link to="/shopleftfullwidth">XS</Link>{" "}
-                        <span class="count">4</span>
+                        {/* <span class="count">4</span> */}
                       </li>
-                      <li>
+                      <li onClick={() => filterSize("XXS")}>
                         <Link to="/shopleftfullwidth">XXS</Link>{" "}
-                        <span class="count">4</span>
+                        {/* <span class="count">4</span> */}
                       </li>
-                      <li>
+                      <li onClick={() => filterSize("XXXL")}>
                         <Link to="/shopleftfullwidth">XXXL</Link>{" "}
-                        <span class="count">6</span>
+                        {/* <span class="count">6</span> */}
+                      </li>
+                      <li onClick={() => setFilter(item)}>
+                        <Link to="/shopleftfullwidth">All Sizes</Link>{" "}
+                        {/* <span class="count">6</span> */}
                       </li>
                     </ul>
                   </div>
@@ -926,32 +1059,36 @@ const ShopLeftFullWidth = () => {
                       Filter By Brands
                     </h3>
                     <div class="widget-tags">
-                      <select name="brand" id="" className="">
-                        <option
-                          value="ajio"
-                          disabled
-                          selected
-                          hidden
-                          className=""
-                        >
+                      <select
+                        name="brand"
+                        value={UniqueBrands.Brands}
+                        id=""
+                        className=""
+                        onChange={handleBrand}
+                      >
+                        <option value="" disabled selected hidden className="">
                           Select the brand
                         </option>
-                        <option value="amisu" className="">
-                          AMISU(24)
-                        </option>
-                        <option value="" className="">
-                          ANN TAYLOR(20)
-                        </option>
-                        <option value="" className="">
-                          ASOS(10)
-                        </option>
-                        <option value="" className="">
-                          ARDENE(2)
-                        </option>
-                        <option value="" className="">
-                          ATHENA(8)
-                        </option>
+                        {UniqueBrands.map((props) => {
+                          return (
+                            <option
+                              value={props.Brands}
+                              className=""
+                              key={props.id}
+                            >
+                              {props.Brands}
+                            </option>
+                          );
+                        })}
                       </select>
+                      <div
+                        value=""
+                        className=""
+                        onClick={() => setFilter(item)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        All Brands
+                      </div>
                     </div>
                   </div>
                   {/* <!-- Tags End --> */}

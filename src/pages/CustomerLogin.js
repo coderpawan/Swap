@@ -13,8 +13,16 @@ const CustomerLogin = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const [user, setUser] = useState();
+  const [message, setMessage] = useState("");
 
   async function signUp() {
+    const regEx = /[a-zA-Z0-9._%+-]+@[a-z0-9._]+\.[a-z]{2,8}(.[a-z{2,8}])?/g;
+    if (regEx.test(email)) {
+      setMessage("Email is not Valid");
+    } else {
+      setMessage("");
+    }
+
     let item = { password1, password2, email };
 
     var result = await fetch("http://super.sytes.net/auth/register/", {
@@ -32,14 +40,19 @@ const CustomerLogin = () => {
     if (password1 === password2) {
       navigate("/afterregister");
     } else {
-      setError("The password is invalid. Please Enter the correct password");
+      setError("Please Enter correct validation");
     }
   }
 
-  useEffect(() => {
-    var token = JSON.parse(localStorage.getItem("login-info"));
+  const handleOnChange = (e) => {
+    setEmail(e.target.value);
+  };
 
+  var token = JSON.parse(localStorage.getItem("login-info"));
+
+  useEffect(() => {
     // console.log(token.access);
+
     const info = async () => {
       var userdetail = await fetch(
         "http://super.sytes.net/api/v1/user-details/",
@@ -91,7 +104,7 @@ const CustomerLogin = () => {
       <div class="section section-padding">
         <div class="container">
           <div class="row g-0">
-            <Login />
+            <Login user_login={token} />
             {/* register start */}
             <div class="col-lg-6">
               <div class="user-login-register">
@@ -105,7 +118,7 @@ const CustomerLogin = () => {
                 <div class="login-register-form">
                   <form action="#">
                     <div class="row learts-mb-n50">
-                      <div class="col-12 learts-mb-50">
+                      <div class="col-12 learts-mb-20">
                         <label htmlFor="registerEmail">
                           Email address <abbr class="required">*</abbr>
                         </label>
@@ -113,9 +126,12 @@ const CustomerLogin = () => {
                           type="email"
                           id="registerEmail"
                           value={email}
-                          onChange={(e) => setEmail(e.target.value)}
+                          onChange={handleOnChange}
+                          required
                         />
                       </div>
+                      <p className="message learts-mb-30">{message}</p>
+
                       <div class="col-12 learts-mb-50">
                         <label htmlFor="password">
                           Password <abbr class="required">*</abbr>
@@ -124,6 +140,7 @@ const CustomerLogin = () => {
                           type="password"
                           value={password1}
                           onChange={(e) => setPassword1(e.target.value)}
+                          required
                         />
                       </div>
                       <div class="col-12 learts-mb-20">
@@ -134,6 +151,7 @@ const CustomerLogin = () => {
                           type="password"
                           value={password2}
                           onChange={(e) => setPassword2(e.target.value)}
+                          required
                         />
                       </div>
                       <div class="col-12 learts-mb-20" style={{ color: "red" }}>

@@ -144,6 +144,13 @@ button {
   color: inherit;
 }
 
+.modal-image {
+  height: 600px;
+}
+.product-thumb-modal {
+  width: 900px;
+  margin-right: 50px !important;
+}
 a,
 button,
 img,
@@ -196,11 +203,33 @@ input:-ms-input-placeholder,
 textarea:-ms-input-placeholder {
   opacity: 1;
 }
-
+.card-header {
+  display: flex;
+}
 ul:last-child {
   margin-bottom: 0;
 }
-
+.message {
+  color: red;
+}
+.addedalert {
+  position: relative;
+  top: 6px;
+  background-color: black;
+  color: white;
+  padding: 10px 10px;
+  height: 50px;
+  border-radius: 20px;
+  animation: fadeIn ease 3s;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
 hr {
   border-top-width: 2px;
 }

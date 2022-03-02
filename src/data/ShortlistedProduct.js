@@ -7,22 +7,22 @@ const Data = [
     id: 1,
     productName: "Top-1",
     image: Product1,
-    newPrice: "₹50",
-    rating: "60%",
+    price: "₹50",
+    points: "300",
   },
   {
     id: 2,
     productName: "Top-2",
     image: Product2,
-    newPrice: "₹50",
-    rating: "80%",
+    price: "₹50",
+    points: "300",
   },
   {
     id: 3,
     productName: "Top-3",
     image: Product3,
-    newPrice: "₹50",
-    rating: "100%",
+    price: "₹50",
+    points: "300",
   },
 ];
 

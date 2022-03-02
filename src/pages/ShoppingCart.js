@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import Data from "../data/CartData";
 
 const ShoppingCart = () => {
+  const user = localStorage.getItem("user");
   // const [visible1, setVisible1] = useState();
   // const [visible2, setVisible2] = useState();
   // const [visible3, setVisible3] = useState();
@@ -38,7 +39,7 @@ const ShoppingCart = () => {
       .then(
         (result) => {
           setCartData(result);
-          console.log(result);
+          console.log("cartresult", result);
           setIsLoaded(true);
         },
 
@@ -63,7 +64,7 @@ const ShoppingCart = () => {
   } else {
     return (
       <div>
-        <Header />
+        <Header userinfo={user} />
         <MobileHeader />
 
         {/* <!-- Page Title/Header Start --> */}
@@ -99,7 +100,7 @@ const ShoppingCart = () => {
                     <th class="name" colspan="2">
                       Product
                     </th>
-                    <th class="price">Price</th>
+                    <th class="price">Price/Points</th>
                     <th class="quantity">Quantity</th>
                     <th class="subtotal">Total</th>
                     <th class="remove">&nbsp;</th>
@@ -119,10 +120,15 @@ const ShoppingCart = () => {
                         </td>
                         <td class="name">
                           {" "}
-                          <a href="product-details.html">{cart.product.name}</a>
+                          <a href="product-details.html">
+                            {cart.product.title}
+                          </a>
                         </td>
                         <td class="price">
-                          <span>{cart.product.price}</span>
+                          <span>
+                            ₹{cart.product.price}/{cart.product.sale_coins}
+                            points
+                          </span>
                         </td>
                         <td class="quantity">
                           <div class="product-quantity">
@@ -136,7 +142,10 @@ const ShoppingCart = () => {
                           </div>
                         </td>
                         <td class="subtotal">
-                          <span>{cart.product.price}</span>
+                          <span>
+                            ₹{cart.product.price}/{cart.product.sale_coins}
+                            points
+                          </span>
                         </td>
                         <td class="remove" onClick={Visibility1}>
                           <div class="btn" id={cart.id}>
@@ -150,12 +159,12 @@ const ShoppingCart = () => {
               </table>
               <div class="row justify-content-between mb-n3">
                 <div class="col-auto mb-3">
-                  <div class="cart-coupon">
+                  {/* <div class="cart-coupon">
                     <input type="text" placeholder="Enter your coupon code" />
                     <button class="btn">
                       <i class="fal fa-gift"></i>
                     </button>
-                  </div>
+                  </div> */}
                 </div>
                 <div class="col-auto">
                   <Link
@@ -164,12 +173,12 @@ const ShoppingCart = () => {
                   >
                     Continue Shopping
                   </Link>
-                  <Link
+                  {/* <Link
                     to="/productfullwidth"
                     class="btn btn-dark btn-outline-hover-dark mb-3"
                   >
                     Update Cart
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
             </form>
@@ -180,14 +189,16 @@ const ShoppingCart = () => {
                   <tr class="subtotal">
                     <th>Subtotal</th>
                     <td>
-                      <span class="amount">₹242.00</span>
+                      <span class="amount">₹{cartData[0].cart_sub_total}</span>
                     </td>
                   </tr>
                   <tr class="total">
                     <th>Total</th>
                     <td>
                       <strong>
-                        <span class="amount">₹242.00</span>
+                        <span class="amount">
+                          ₹{cartData[0].cart_sub_total}
+                        </span>
                       </strong>
                     </td>
                   </tr>

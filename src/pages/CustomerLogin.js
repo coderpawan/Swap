@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import BgTitle1 from "../assets/images/bg/page-title-1.png";
 import { Link, useNavigate } from "react-router-dom";
 import Login from "../components/Login";
+import validator from "validator";
 
 const CustomerLogin = () => {
   const [email, setEmail] = useState("");
@@ -16,13 +17,11 @@ const CustomerLogin = () => {
   const [message, setMessage] = useState("");
 
   async function signUp() {
-    const regEx = /[a-zA-Z0-9._%+-]+@[a-z0-9._]+\.[a-z]{2,8}(.[a-z{2,8}])?/g;
-    if (regEx.test(email)) {
-      setMessage("Email is not Valid");
+    if (validator.isEmail(email)) {
+      setMessage("The Email is Valid");
     } else {
-      setMessage("");
+      setMessage("Enter Valid email Id!!");
     }
-
     let item = { password1, password2, email };
 
     var result = await fetch("http://super.sytes.net/auth/register/", {
@@ -37,16 +36,12 @@ const CustomerLogin = () => {
     console.log("result", result);
     localStorage.setItem("user-email", JSON.stringify(result.email));
     localStorage.setItem("user-id", JSON.stringify(result.id));
-    if (password1 === password2) {
+    if (password1 === password2 && validator.isEmail(email)) {
       navigate("/afterregister");
     } else {
       setError("Please Enter correct validation");
     }
   }
-
-  const handleOnChange = (e) => {
-    setEmail(e.target.value);
-  };
 
   var token = JSON.parse(localStorage.getItem("login-info"));
 
@@ -126,7 +121,7 @@ const CustomerLogin = () => {
                           type="email"
                           id="registerEmail"
                           value={email}
-                          onChange={handleOnChange}
+                          onChange={(e) => setEmail(e.target.value)}
                           required
                         />
                       </div>
